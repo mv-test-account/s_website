@@ -1,3 +1,9 @@
+//let contactPage = require('./contactPage');
+let homePage = require('./homePage');
+let contactPage = require('./contactPage');
+let portfolioPage = require('./portfolioPage');
+
+
 let urlPrefix = ['portfolio', "careers", "about","blog.salsitasoft"];
 let EC = protractor.ExpectedConditions;
 
@@ -7,26 +13,35 @@ describe('test menu tab',()=>{
     });
 
     afterAll(function(){
-        browser.close()
+       // browser.close()
     });
 
     it('test porfolio', function () {
-        let links = $$(".nav-links li");
-        links.get(0).click();
-        browser.wait(EC.urlContains(urlPrefix[0]), 4000);
-        expect(browser.getCurrentUrl()).toContain(urlPrefix[0]);
-        browser.wait(EC.elementToBeClickable($$('.links div[class=link]').get(0)), 4000);
+        homePage.getMenuItems.portfolio.click();
 
-        expect($('.heading-sequential').getText()).toBe('We thrive on\nchallenging projects.');
+        portfolioPage.waitOnLinksClickable();
+        expect(browser.getCurrentUrl()).toContain(Object.keys(homePage.getMenuItems)[0]);
+        expect(portfolioPage.getElements.textHeading.getText()).toBe(portfolioPage.getElements.heading);
         //pridat kontrolu na linky
     });
 
-    it('test careers tab', async function () {
+    it('test careers tab', function () {
+
         let links = $$(".nav-links li");
         links.get(1).click();
         browser.wait(EC.urlContains(urlPrefix[1]), 4000);
         expect(browser.getCurrentUrl()).toContain(urlPrefix[1]);
-        browser.wait(EC.elementToBeClickable($('.content .title:first-child')), 4000);
+        $$('.content .title:first-child').then(function (position) {
+            browser.sleep(3000);
+            console.log(position.length);
+        });
+
+
+
+        //if()
+
+         //   $('.content .title:first-child').isPresent
+        browser.wait(EC.elementToBeClickable($('.content .title:first-child')), 4000, 'position element is not visible');
 
         expect($('.heading-sequential').getText()).toBe('Career growth in a\nsuper smart team.');
 
@@ -50,7 +65,7 @@ describe('test menu tab',()=>{
 
         browser.getAllWindowHandles().then(function (handles) {
             browser.switchTo().window(handles[1]);
-        })
+        });
 
         browser.wait(EC.urlContains(urlPrefix[3]), 2000);
         expect(browser.getCurrentUrl()).toContain(urlPrefix[3]);
@@ -59,24 +74,15 @@ describe('test menu tab',()=>{
     });
 
     it('test getINtouch button', function () {
-        element(by.css('a[class*=get-in-touch]')).click();
-
-        browser.wait(EC.elementToBeClickable($('#sender-gdpr')),5000);
+        homePage.getElements.buttonGetInTouch.click();
+        contactPage.waitOnGdprCheckbox();
 
         expect(browser.getCurrentUrl()).toContain('contact');
         expect($('.heading-sequential').getText()).toBe('Ready to talk?');
 
-        $('#sender-name').sendKeys('testing account');
-        //$('#sender-email').sendKeys('email@em.com');
-        $('#sender-phone').sendKeys('+420745678695');
-        $('#sender-company').sendKeys('TESTINg comapny');
-        $('#sender-description').sendKeys('first description with should be quite long');
-        $('#sender-gdpr').click();
-        $('.send-container .button').click();
+        contactPage.fillForm('name','234234234234','email','unknown destination');
 
         expect(browser.getCurrentUrl()).toContain('contact');
-
-        // it will be good to have tooltip validation
     });
 
     // it("test footer section", async function () {
@@ -91,11 +97,11 @@ describe('test menu tab',()=>{
 });
 
 describe('second test', function () {
-    it('test home page under icon', async function () {
+    it('test home page under icon', function () {
         browser.get('https://www.salsitasoft.com/contact');
         $('a[class*=logo-salsita]:first-child').click();
 
-        let freeConsultButton = await $('.container a[class=button]');
+        let freeConsultButton = $('.container a[class=button]');
         browser.wait(EC.elementToBeClickable(freeConsultButton),5000);
 
        expect($('h1[class=heading-sequential]').getText()).toBe('We build exceptional web\nand mobile applications.');
