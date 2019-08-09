@@ -1,4 +1,6 @@
 let EC = protractor.ExpectedConditions;
+const pageHelper = require('./pageHelper');
+const helper = new pageHelper();
 const elements = {
     inputName : $('#sender-name'),
     inputPhone : $('#sender-phone'),
@@ -7,7 +9,9 @@ const elements = {
     checkboxGdpr   : $('#sender-gdpr'),
     buttonOk    : $('.send-container .button .text'),
     textHeading : $('.heading-sequential'),
-    heading : 'Ready to talk?'
+    heading : 'Ready to talk?',
+    urlPath: 'contact',
+    title : 'Contact – Salsita Software'
 
 };
 
@@ -16,7 +20,7 @@ const elements = {
     this.getElements = elements;
 
     this.get = function() {
-        browser.get('https://www.salsitasoft.com/contact');
+        browser.get('https://www.salsitasoft.com/' + elements.urlPath);
     };
 
     this.waitOnGdprCheckbox = ()=>{
@@ -29,10 +33,8 @@ const elements = {
         elements.inputEmail.sendKeys(email);
         elements.inputDescription.sendKeys(descprition);
         elements.checkboxGdpr.click();
-        browser.executeScript("arguments[0].scrollIntoView();", elements.buttonOk.getWebElement());
-        browser.sleep(4000);
-        elements.buttonOk.click();
+        helper.scrollToElement(elements.buttonOk);
     }
 
  };
-module.exports = new ContactPage();
+module.exports = ContactPage;
