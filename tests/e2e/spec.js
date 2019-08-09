@@ -1,15 +1,8 @@
-//let contactPage = require('./contactPage');
-let homePage = require('./homePage');
-let contactPage = require('./contactPage');
-let portfolioPage = require('./portfolioPage');
-
-
-let urlPrefix = ['portfolio', "careers", "about","blog.salsitasoft"];
-let EC = protractor.ExpectedConditions;
+let lib = require('../lib/pages');
 
 describe('test menu tab',()=>{
     beforeEach(function(){
-        browser.get('https://www.salsitasoft.com/');
+        lib.home.get();
     });
 
     afterAll(function(){
@@ -17,72 +10,51 @@ describe('test menu tab',()=>{
     });
 
     it('test porfolio', function () {
-        homePage.getMenuItems.portfolio.click();
+        lib.home.getMenuItems.portfolio.click();
+        lib.helper.waitOnTitle(lib.portfolio.getElements.title);
 
-        portfolioPage.waitOnLinksClickable();
-        expect(browser.getCurrentUrl()).toContain(Object.keys(homePage.getMenuItems)[0]);
-        expect(portfolioPage.getElements.textHeading.getText()).toBe(portfolioPage.getElements.heading);
-        //pridat kontrolu na linky
+        expect(browser.getCurrentUrl()).toContain(lib.portfolio.getElements.urlPath);
+        expect(lib.portfolio.getElements.textHeading.getText()).toBe(lib.portfolio.getElements.heading);
     });
 
     it('test careers tab', function () {
+        lib.home.getMenuItems.careers.click();
+        lib.helper.waitOnTitle(lib.career.getElements.title);
 
-        let links = $$(".nav-links li");
-        links.get(1).click();
-        browser.wait(EC.urlContains(urlPrefix[1]), 4000);
-        expect(browser.getCurrentUrl()).toContain(urlPrefix[1]);
-        $$('.content .title:first-child').then(function (position) {
-            browser.sleep(3000);
-            console.log(position.length);
-        });
-
-
-
-        //if()
-
-         //   $('.content .title:first-child').isPresent
-        browser.wait(EC.elementToBeClickable($('.content .title:first-child')), 4000, 'position element is not visible');
-
-        expect($('.heading-sequential').getText()).toBe('Career growth in a\nsuper smart team.');
-
+        expect(browser.getCurrentUrl()).toContain(lib.career.getElements.urlPath);
+        expect(lib.career.getElements.textHeading.getText()).toBe(lib.career.getElements.heading);
     });
 
     it('test about tab', function () {
-        let links = $$(".nav-links li");
+        lib.home.getMenuItems.about.click();
 
-        links.get(2).click();
-        browser.wait(EC.urlContains(urlPrefix[2]), 4000);
-        expect(browser.getCurrentUrl()).toContain(urlPrefix[2]);
-        browser.wait(EC.elementToBeClickable($('.social .linkedin')), 4000);
 
-        expect($('section[class = \'hero about\'] .content h1').getText()).toBe('Made in Prague');
+        lib.helper.waitOnTitle(lib.about.getElements.title);
 
+        expect(browser.getCurrentUrl()).toContain(lib.about.getElements.urlPath);
+        expect(lib.about.getElements.textHeading.getText()).toBe(lib.about.getElements.heading);
     });
 
     it('test blog post page', function () {
-        let links = $$(".nav-links li");
-        links.get(3).click();
+        lib.home.getMenuItems["blog.salsitasoft"].click();
+        lib.helper.switchToSecondWindow();
+        lib.helper.waitOnTitle(lib.blog.getElements.title);
 
-        browser.getAllWindowHandles().then(function (handles) {
-            browser.switchTo().window(handles[1]);
-        });
-
-        browser.wait(EC.urlContains(urlPrefix[3]), 2000);
-        expect(browser.getCurrentUrl()).toContain(urlPrefix[3]);
-        expect($('.hero-title').getText()).toBe('SAUCECODE');
-        expect($('.hero-text').getText()).toBe('Subscribe to Salsita blog');
+        expect(browser.getCurrentUrl()).toBe(lib.blog.getElements.urlPath);
+        expect(lib.blog.getElements.textTitleLocator.getText()).toBe(lib.blog.getElements.textTitle);
+        expect(lib.blog.getElements.textHeroLocator.getText()).toBe(lib.blog.getElements.textHero);
     });
 
-    it('test getINtouch button', function () {
-        homePage.getElements.buttonGetInTouch.click();
-        contactPage.waitOnGdprCheckbox();
+    it('test getInTouch button', function () {
+        lib.home.getElements.buttonGetInTouch.click();
+        lib.helper.waitOnTitle(lib.contact.getElements.title);
 
-        expect(browser.getCurrentUrl()).toContain('contact');
+        expect(browser.getCurrentUrl()).toContain(lib.contact.getElements.urlPath);
         expect($('.heading-sequential').getText()).toBe('Ready to talk?');
 
-        contactPage.fillForm('name','234234234234','email','unknown destination');
+        lib.contact.fillForm('name','234234234234','email','unknown destination');
 
-        expect(browser.getCurrentUrl()).toContain('contact');
+        expect(browser.getCurrentUrl()).toContain(lib.contact.getElements.urlPath);
     });
 
     // it("test footer section", async function () {
@@ -97,18 +69,35 @@ describe('test menu tab',()=>{
 });
 
 describe('second test', function () {
+    // it('test', function () {
+    //     lib.home.get();
+    //    lib.contact.get()
+    //        //browser.wait(EC.titleContains('SauceCode'))
+    //     // browser.getCurrentUrl().then(function (title) {
+    //     //     console.log('url' + title);
+    //     // })
+    //     browser.getTitle().then(function (title) {
+    //         console.log('title' + title);
+    //     })
+    //
+    //
+    // });
+
     it('test home page under icon', function () {
-        browser.get('https://www.salsitasoft.com/contact');
-        $('a[class*=logo-salsita]:first-child').click();
+        lib.portfolio.get();
+        lib.home.getElements.iconSalsita.click();
+        lib.helper.waitOnTitle(lib.home.getElements.title);
 
-        let freeConsultButton = $('.container a[class=button]');
-        browser.wait(EC.elementToBeClickable(freeConsultButton),5000);
+        expect(lib.home.getElements.textHeading.getText()).toBe(lib.home.getElements.heading);
 
-       expect($('h1[class=heading-sequential]').getText()).toBe('We build exceptional web\nand mobile applications.');
-
-
-        freeConsultButton.click();
-        browser.wait(EC.elementToBeClickable($('#sender-gdpr')), 5000);
-        expect(browser.getCurrentUrl()).toContain('contact');
+        lib.home.getElements.buttonFreeConsult.isPresent().then(button => {
+            if(button){
+                lib.home.getElements.buttonFreeConsult.click();
+                lib.contact.waitOnGdprCheckbox();
+                expect(browser.getCurrentUrl()).toContain(lib.contact.getElements.urlPath)
+            }else {
+                console.log('Button was not dipslayed')
+            }
+        });
     });
 });
