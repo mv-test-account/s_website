@@ -1,2 +1,0 @@
-// pozriet pracu s moduli
-

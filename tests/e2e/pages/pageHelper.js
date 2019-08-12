@@ -1,6 +1,5 @@
 let EC = protractor.ExpectedConditions;
-const elements = {
-};
+const elements = {};
 
 let pageHelper = function (){
     this.getPageHelper = elements;
@@ -10,10 +9,11 @@ let pageHelper = function (){
             browser.switchTo().window(handles[1]);
         });
     };
+
     this.scrollToElement = (element)=>{
         browser.executeScript("arguments[0].scrollIntoView();", element.getWebElement());
-        element.click();
     };
+
     this.waitOnTitle = (title)=>{
         browser.wait(EC.titleContains(title), 5000, "`wait on title " + $(elements.title) + " was not successful");
     }
