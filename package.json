@@ -9,6 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "esl": "^10.0.0",
     "protractor": "^5.4.2"
+  },
+  "devDependencies": {
+    "eslint": "^6.1.0"
   }
 }

@@ -1,4 +1,6 @@
 let lib = require('../lib/pages');
+let EC = protractor.ExpectedConditions;
+
 
 describe('test menu tab', () => {
     beforeEach(function () {
@@ -33,7 +35,7 @@ describe('test menu tab', () => {
         expect(lib.about.getElements.textHeading.getText()).toBe(lib.about.getRequired.heading);
     });
 
-    it('test blog post page', function () {
+    it('test blog post page', async function () {
         lib.home.getMenuItems["blog.salsitasoft"].click();
         lib.helper.switchToSecondWindow();
         lib.helper.waitOnTitle(lib.blog.getRequired.title);
@@ -41,6 +43,35 @@ describe('test menu tab', () => {
         expect(browser.getCurrentUrl()).toBe(lib.blog.getRequired.urlPath);
         expect(lib.blog.getElements.textTitleLocator.getText()).toBe(lib.blog.getRequired.textTitle);
         expect(lib.blog.getElements.textHeroLocator.getText()).toBe(lib.blog.getRequired.textHero);
+
+        lib.helper.scrollToElement(lib.blog.getElements.buttonMoveUp);
+        lib.blog.getElements.buttonMoveUp.click();
+        //
+        lib.helper.waitOnVisibilityOfElement(lib.blog.getElements.menuBurgerOpen)
+        //browser.sleep(3000)
+        // browser.wait(function clickSuccessful() {
+        //     return lib.blog.getElements.menuBurgerOpen.click().then(() => true, (ex) => false);
+        // }, 5000);
+        // //
+        // // lib.helper.waitOnClickableElement(lib.blog.getElements.menuBurgerOpen)
+        lib.helper.waitUntilY0();
+        //browser.sleep(500)
+         lib.blog.getElements.menuBurgerOpen.click();
+
+
+        console.log(await lib.helper.getCurrentPosition());
+        console.log('======================')
+        console.log(await lib.helper.getCurrentPosition());
+        expect(lib.blog.getElements.buttonLearnMore.isPresent()).toBe(true);
+        lib.helper.waitOnVisibilityOfElement(lib.blog.getElements.buttonLearnMore);
+        lib.blog.getElements.textWidgetTitles.map(async function(title, index) {
+            expect(title.getText()).toBe(lib.blog.getRequired.sideMenuHeadlines[index]);
+        });
+
+        expect(lib.blog.getElements.sideBarOpened.isPresent()).toBe(true);
+        lib.blog.getElements.menuBurgerClose.click();
+        expect(lib.blog.getElements.sideBarOpened.isPresent()).toBe(false);
+
     });
 
     it('test getInTouch button', function () {

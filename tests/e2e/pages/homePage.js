@@ -2,9 +2,11 @@ let EC = protractor.ExpectedConditions;
 
 const menuItems = {
     portfolio: $$(".nav-links li").get(0),
-    careers: $$(".nav-links li").get(1),
-    about: $$(".nav-links li").get(2),
-    "blog.salsitasoft": $$(".nav-links li").get(3)
+    services: $$(".nav-links li").get(1),
+    careers: $$(".nav-links li").get(2),
+    about: $$(".nav-links li").get(3),
+    "blog.salsitasoft": $$(".nav-links li").get(4),
+
 };
 
 const elements = {
@@ -28,6 +30,7 @@ const required = {
     hrefLinks:
         [   'https://www.salsitasoft.com/',
             'https://www.salsitasoft.com/portfolio',
+            'https://www.salsitasoft.com/services',
             'https://www.salsitasoft.com/careers',
             'https://www.salsitasoft.com/about',
             'https://blog.salsitasoft.com/',
@@ -39,6 +42,7 @@ const required = {
             'https://instagram.com/salsitasoft',
             'https://github.com/salsita']
 };
+
 
 let HomePage = function () {
     this.getElements = elements;
